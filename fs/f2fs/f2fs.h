@@ -190,6 +190,7 @@ enum {
 #define DEF_MAX_DISCARD_URGENT_ISSUE_TIME	10000	/* 10 s, if no candidates on high utilization */
 #define DEF_CP_INTERVAL			60	/* 60 secs */
 #define DEF_IDLE_INTERVAL		5	/* 5 secs */
+#define DEF_UMOUNT_DISCARD_TIMEOUT	5	/* 5 secs */
 
 struct cp_control {
 	int reason;
@@ -297,6 +298,7 @@ struct discard_policy {
 	bool io_aware;			/* issue discard in idle time */
 	bool sync;			/* submit discard with REQ_SYNC flag */
 	unsigned int granularity;	/* discard granularity */
+	int timeout;			/* discard timeout for put_super */
 };
 
 struct discard_cmd_control {
@@ -1076,6 +1078,7 @@ enum {
 	REQ_TIME,
 	DISCARD_TIME,
 	GC_TIME,
+	UMOUNT_DISCARD_TIMEOUT,
 	MAX_TIME,
 };
 
@@ -2896,11 +2899,11 @@ void invalidate_blocks(struct f2fs_sb_info *sbi, block_t addr);
 bool is_checkpointed_data(struct f2fs_sb_info *sbi, block_t blkaddr);
 void drop_discard_cmd(struct f2fs_sb_info *sbi);
 void stop_discard_thread(struct f2fs_sb_info *sbi);
-bool f2fs_wait_discard_bios(struct f2fs_sb_info *sbi);
 void clear_prefree_segments(struct f2fs_sb_info *sbi, struct cp_control *cpc);
 void release_discard_addrs(struct f2fs_sb_info *sbi);
 int npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra);
 void allocate_new_segments(struct f2fs_sb_info *sbi);
+bool f2fs_issue_discard_timeout(struct f2fs_sb_info *sbi);
 int f2fs_trim_fs(struct f2fs_sb_info *sbi, struct fstrim_range *range);
 bool exist_trim_candidates(struct f2fs_sb_info *sbi, struct cp_control *cpc);
 struct page *get_sum_page(struct f2fs_sb_info *sbi, unsigned int segno);
