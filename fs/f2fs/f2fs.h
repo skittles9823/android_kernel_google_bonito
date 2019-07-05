@@ -187,6 +187,7 @@ enum {
 #define DEF_MID_DISCARD_ISSUE_TIME	500	/* 500 ms, if device busy */
 #define DEF_MAX_DISCARD_ISSUE_TIME	60000	/* 60 s, if no candidates */
 #define DEF_DISCARD_URGENT_UTIL		80	/* do more discard over 80% */
+#define DEF_MAX_DISCARD_URGENT_ISSUE_TIME	10000	/* 10 s, if no candidates on high utilization */
 #define DEF_CP_INTERVAL			60	/* 60 secs */
 #define DEF_IDLE_INTERVAL		5	/* 5 secs */
 
@@ -1077,6 +1078,13 @@ enum {
 };
 
 enum {
+        GC_NORMAL,
+        GC_IDLE_CB,
+        GC_IDLE_GREEDY,
+        GC_URGENT,
+};
+
+enum {
 	WHINT_MODE_OFF,		/* not pass down write hints */
 	WHINT_MODE_USER,	/* try to pass down hints given by users */
 	WHINT_MODE_FS,		/* pass down hints with F2FS policy */
@@ -1206,6 +1214,7 @@ struct f2fs_sb_info {
 	struct mutex gc_mutex;			/* mutex for GC */
 	struct f2fs_gc_kthread	*gc_thread;	/* GC thread */
 	unsigned int cur_victim_sec;		/* current victim section num */
+	unsigned int gc_mode;                   /* current GC state */
 
 	/* threshold for converting bg victims for fg */
 	u64 fggc_threshold;
@@ -1268,6 +1277,8 @@ struct f2fs_sb_info {
 
 	/* Precomputed FS UUID checksum for seeding other checksums */
 	__u32 s_chksum_seed;
+
+	struct list_head list;
 };
 
 #ifdef CONFIG_F2FS_FAULT_INJECTION
@@ -2995,6 +3006,11 @@ bool f2fs_overwrite_io(struct inode *inode, loff_t pos, size_t len);
 int start_gc_thread(struct f2fs_sb_info *sbi);
 void stop_gc_thread(struct f2fs_sb_info *sbi);
 block_t start_bidx_of_node(unsigned int node_ofs, struct inode *inode);
+void f2fs_start_all_gc_threads(void);
+void f2fs_stop_all_gc_threads(void);
+void f2fs_sbi_list_add(struct f2fs_sb_info *sbi);
+void f2fs_sbi_list_del(struct f2fs_sb_info *sbi);
+
 int f2fs_gc(struct f2fs_sb_info *sbi, bool sync, bool background,
 			unsigned int segno);
 void build_gc_manager(struct f2fs_sb_info *sbi);
