@@ -3461,7 +3461,6 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int alloc_order, int reclaim_o
 
 	prepare_to_wait(&pgdat->kswapd_wait, &wait, TASK_INTERRUPTIBLE);
 
-<<<<<<< HEAD
 	/*
 	 * Try to sleep for a short interval. Note that kcompactd will only be
 	 * woken if it is possible to sleep for a short interval. This is
