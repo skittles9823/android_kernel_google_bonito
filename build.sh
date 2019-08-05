@@ -19,7 +19,7 @@ export LD_LIBRARY_PATH=/mnt/nvme/kernel/clang/clang-r353983e/lib64:$LD_LIBRARY_P
 DEFCONFIG="bonito_defconfig"
 
 # Kernel Details
-VER=".V1.1"
+VER=".V1.2"
 
 # Paths
 KERNEL_DIR=`pwd`
