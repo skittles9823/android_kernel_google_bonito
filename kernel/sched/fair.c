@@ -8447,7 +8447,7 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
 	 * 1. Task doesn't fit
 	 * 2. Task is SchedTune boosted
 	 */
-	if (env->flags & LBF_IGNORE_BIG_TASKS &&
+	if (env->flags & LBF_IGNORE_BIG_TASKS (&&)
 		(!task_fits_max(p, env->dst_cpu)) || (schedtune_task_boost(p) > 0))
 		return 0;
 #endif
