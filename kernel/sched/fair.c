@@ -7534,6 +7534,7 @@ enum fastpaths {
 	PREV_CPU_BIAS,
 };
 
+#ifdef CONFIG_SCHED_WALT
 static int select_energy_cpu_brute(struct task_struct *p, int prev_cpu)
 {
 	bool boosted, prefer_idle;
@@ -7668,6 +7669,7 @@ unlock:
 			      cpumask_first(rtg_target) : -1, start_t);
 	return target_cpu;
 }
+#endif //CONFIG_SCHED_WALT
 
 /*
  * Predicts what cpu_util(@cpu) would return if @p was migrated (and enqueued)
