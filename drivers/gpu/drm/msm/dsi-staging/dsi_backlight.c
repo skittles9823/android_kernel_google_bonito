@@ -45,7 +45,12 @@
 bool backlight_dimmer = 1;
 module_param(backlight_dimmer, bool, 0644);
 
+#ifdef CONFIG_DRM_SDE_EXPO
+static int hbm_enable = 1;
+#else
 static int hbm_enable = 0;
+#endif
+
 static struct dsi_backlight_config *bl_g;
 static struct device *fb0_device;
 
