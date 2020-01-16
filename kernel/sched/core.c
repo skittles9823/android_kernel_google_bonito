@@ -1039,6 +1039,7 @@ static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
  */
 static struct rq *move_queued_task(struct rq *rq, struct task_struct *p, int new_cpu)
 {
+	struct rq_flags rf;
 	lockdep_assert_held(&rq->lock);
 
 	p->on_rq = TASK_ON_RQ_MIGRATING;
@@ -1049,7 +1050,7 @@ static struct rq *move_queued_task(struct rq *rq, struct task_struct *p, int new
 	double_rq_unlock(cpu_rq(new_cpu), rq);
 #else
 	set_task_cpu(p, new_cpu);
-	rq_unlock(rq, rf);
+	task_rq_unlock(rq, p, &rf);
 #endif
 
 	rq = cpu_rq(new_cpu);
